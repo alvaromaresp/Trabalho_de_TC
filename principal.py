@@ -142,7 +142,7 @@ class UH(object):
 
             self.numero_transicoes += 1
 
-            if not self.flag_max and ((len(self.estados)* len(self.alfabeto_fita) * (len(self.w) - 3)) < self.numero_transicoes):
+            if not self.flag_max and ((len(self.estados)* (len(self.alfabeto_fita) ** (len(self.w) - 3)) * (len(self.w) - 3)) < self.numero_transicoes):
                 self.numero_transicoes = 0
                 self.flag_max = True
                 print ("Caso essa MT seja um ALL, ela está em loop.")
@@ -177,7 +177,7 @@ class UH(object):
 
 
             self.transicao_anterior = (self.estadoAtual(), self.simboloAtual(), novoEstado, novoSimbolo, direcao)
-
+            print (self.fita[3])
             self.executaTransicao(novoEstado, novoSimbolo, direcao)
             self.executaMaquinaSimulada()
 
