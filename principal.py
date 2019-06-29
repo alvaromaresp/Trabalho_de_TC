@@ -23,8 +23,8 @@ class UH(object):
 
         formaRegex = r"(000((1+)0(1+)0(1+)0(1+)0(1+)00)*((1+)0(1+)0(1+)0(1+)0(1+))000((1+)0)*(1+)000)"
         if not re.match(formaRegex, self.rmw):
+            print('Formato incorreto.')
             exit()
-            # TODO imprimir fitas
         else:
             self.w = self.rmw.split("000")[2]
 
@@ -56,6 +56,7 @@ class UH(object):
       | escrita (str) -> o que será escrito
       | direcao (str) -> "1" para direita ou "11" para esquerda
       | cabecaInicio (bool) -> True para a cabeça voltar ao inicio da fita após a escrita, False para manter onde parou
+      retorno (não há)
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def escreveNaFita(self, fita, escrita, direcao="1", cabecaInicio=False):
@@ -79,6 +80,7 @@ class UH(object):
      MÉTODO PARA MOVER PARA O INICIO A CABEÇA DE L/E DE UMA DETERMINADA FITA
     ------------------------------------------------------------------------------------------------------------------
       | fita (int) -> número da fita
+      retorno (não há)
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def moverCabecaParaInicio(self, fita):
@@ -89,16 +91,18 @@ class UH(object):
     MÉTODO PARA APAGAR CONTEÚDO DE UMA FITA
     ------------------------------------------------------------------------------------------------------------------
       | fita (int) -> número da fita
+      retorno (não há)
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def apagarFita(self, fita):
         self.fita[fita] = []
         self.head[fita] = 0
 
-
     '''
     ------------------------------------------------------------------------------------------------------------------
     MÉTODO PARA OBTER O SÍMBOLO QUE A MÁQUINA SIMULADA ESTÁ LENDO NO MOMENTO
+    ------------------------------------------------------------------------------------------------------------------
+      retorno (str)
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def simboloAtual(self):
@@ -119,6 +123,8 @@ class UH(object):
     ------------------------------------------------------------------------------------------------------------------
     MÉTODO PARA OBTER O ESTADO ATUAL QUE A MÁQUINA SIMULADA ESTÁ
     ------------------------------------------------------------------------------------------------------------------
+      retorno (str)
+    ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def estadoAtual(self):
         estado = ""
@@ -130,6 +136,8 @@ class UH(object):
     '''
     ------------------------------------------------------------------------------------------------------------------
     MÉTODO RECURSIVO PARA SIMULAR A EXECUÇÃO DA MÁQUINA
+    ------------------------------------------------------------------------------------------------------------------
+      retorno (não há) -> imprime a configuração da Fita #3 a cada transição
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def executaMaquinaSimulada(self):
@@ -145,11 +153,10 @@ class UH(object):
             if not self.flag_max and ((len(self.estados)* (len(self.alfabeto_fita) ** (len(self.w) - 3)) * (len(self.w) - 3)) < self.numero_transicoes):
                 self.numero_transicoes = 0
                 self.flag_max = True
-                print ("Caso essa MT seja um ALL, ela está em loop.")
+                print("Caso essa MT seja um ALL, ela está em loop.")
             elif self.flag_max:
-                print ("Loop.")
-                exit();
-
+                print("Loop.")
+                exit()
 
             pos += 2
             self.head[1] = pos
@@ -175,11 +182,13 @@ class UH(object):
             elif self.flag_max:
                 self.numero_transicoes = 0
 
-
             self.transicao_anterior = (self.estadoAtual(), self.simboloAtual(), novoEstado, novoSimbolo, direcao)
-            print (self.fita[3])
+            self.imprimeFita(3)
             self.executaTransicao(novoEstado, novoSimbolo, direcao)
             self.executaMaquinaSimulada()
+        else:
+            self.numero_transicoes += 1
+            self.imprimeFita(3)
 
     '''
     ------------------------------------------------------------------------------------------------------------------
@@ -188,6 +197,7 @@ class UH(object):
       | novoEstado (str) -> estado atingido após a transição
       | novoSimbolo (str) -> simbolo a ser escrito na fita após a transição
       | direcao (str) -> "1" para movimentar a direita, "11" para a esquerda
+      retorno (não há)
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def executaTransicao(self, novoEstado, novoSimbolo, direcao):
@@ -240,6 +250,7 @@ class UH(object):
     MÉTODO RETORNAR VARIÁVEIS COMPOSTAS CONVERTIDAS EM CADEIA DE CARACTERES
     ------------------------------------------------------------------------------------------------------------------
       | item (tuple, list, dict) -> item a ser convertidos
+      retorno (str)
     ------------------------------------------------------------------------------------------------------------------
     '''  # DOCUMENTAÇÃO
     def stringify(self, item):
@@ -253,12 +264,26 @@ class UH(object):
 
             return r
 
+    '''
+    ------------------------------------------------------------------------------------------------------------------
+    MÉTODO PARA IMPRIMIR UMA FITA
+    ------------------------------------------------------------------------------------------------------------------
+      retorno (não há) -> imprime as listas na tela
+    ------------------------------------------------------------------------------------------------------------------
+    '''  # DOCUMENTAÇÃO
+    def imprimeFita(self, fita):
+        legenda = (f'Fita #{fita}: |')
+        print(' '*(self.head[fita]*2 + len(legenda))+'↓')
+        print(legenda, end='')
+        for e in self.fita[fita]:
+            print(e, end='|')
+        print('')
 
 
 
-if sys.argv[1] != None:
+if len(sys.argv) > 1:
     arquivo = open(sys.argv[1], "r")
-    aux = arquivo.readline();
+    aux = arquivo.readline()
     rmw = aux.split("\n")[0]
 
     mtu = UH(rmw)
