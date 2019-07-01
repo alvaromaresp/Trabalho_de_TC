@@ -150,7 +150,7 @@ class UH(object):
 
             self.numero_transicoes += 1
 
-            if not self.flag_max and ((len(self.estados)* (len(self.alfabeto_fita) ** (len(self.w) - 3)) * (len(self.w) - 3)) < self.numero_transicoes):
+            if not self.flag_max and ((len(self.estados)* (len(self.alfabeto_fita) ** (len(self.w.split('0') - 1)) * (len(self.w.split('0') - 3)) < self.numero_transicoes):
                 self.numero_transicoes = 0
                 self.flag_max = True
                 print("Caso essa MT seja um ALL, ela está em loop.")
